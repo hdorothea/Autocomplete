@@ -1,4 +1,4 @@
-export class Controller {
+export default class Controller {
   constructor(model, queryInputView, suggestionView) {
     this.queryInputView = queryInputView;
     this.suggestionView = suggestionView;

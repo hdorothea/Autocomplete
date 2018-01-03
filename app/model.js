@@ -1,7 +1,6 @@
 import { getLastWordAutoCompleteSuggestionsFakeBackend } from './utils/utils';
 
 export default class Model {
-
   setQuery(query) {
     this.query = query;
   }
