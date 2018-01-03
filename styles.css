@@ -8,3 +8,13 @@
   padding: 0;
   font-family: Roboto, Arial, sans-serif;  
 }
+
+.suggestion.active {
+  background-color: gainsboro;
+}
+
+.search-container {
+  display: flex;
+  flex-direction: column;
+  width: 30em;
+}
