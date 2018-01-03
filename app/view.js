@@ -28,4 +28,27 @@ export class SuggestionView {
     this.el.innerHTML = '';
     this.el.innerHTML = getSuggestionsTemplate(suggestions);
   }
+
+  updateActive(activeSuggestion) {
+    this.el.querySelectorAll('.suggestion').forEach((suggestionLi) => {
+      if (suggestionLi.textContent === activeSuggestion) {
+        suggestionLi.classList.add('active');
+      } else {
+        suggestionLi.classList.remove('active');
+      }
+    });
+  }
+
+  onMouseOver(event, handler) {
+    const suggestionElement = event.target.closest('.suggestion');
+    if (suggestionElement) {
+      handler(suggestionElement.textContent);
+    }
+  }
+
+  bindMouseOver(handler) {
+    $on(this.el, 'mouseover', (event) => {
+      this.onMouseOver(event, handler);
+    });
+  }
 }

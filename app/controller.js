@@ -7,10 +7,15 @@ export class Controller {
 
   run() {
     this.queryInputView.bindInputChange(this.updateQuery.bind(this));
-    // bind the handlers for the suggestionView
+    this.suggestionView.bindMouseOver(this.updateActiveSuggestion.bind(this));
   }
 
   updateQuery(newQuery) {
-    this.model.updateQuery(newQuery, (suggestions) => this.suggestionView.update(suggestions));
+    this.model.updateQuery(newQuery, suggestions => this.suggestionView.update(suggestions));
+  }
+
+  updateActiveSuggestion(activeSuggestion) {
+    this.model.updateActiveSuggestion(activeSuggestion, activeSuggestion =>
+      this.suggestionView.updateActive(activeSuggestion));
   }
 }

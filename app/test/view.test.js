@@ -38,7 +38,10 @@ describe('SuggestionView', () => {
   let testSuggestionView;
 
   beforeEach(() => {
-    document.body.innerHTML = "<ul class='suggestions'> </ul";
+    document.body.innerHTML = `<ul class='suggestions'> 
+  <li class='suggestion'> <div> <div class='num'> Number </div> Hallo </div> </li> 
+  <li class='suggestion'>Lola</li> 
+</ul`;
     testSuggestionView = new SuggestionView();
   });
 
@@ -46,5 +49,9 @@ describe('SuggestionView', () => {
     expect(testSuggestionView.el.classList).toContain('suggestions');
     expect(testSuggestionView.el.tagName).toBe('UL');
   });
-  
+
+  test('should add the active class to the correct suggestion element', () => {
+    testSuggestionView.updateActive('Lola');
+    expect(testSuggestionView.el.querySelector('.active').textContent).toBe('Lola');
+  });
 });

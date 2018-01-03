@@ -1,5 +1,10 @@
 import { getSuggestions } from '../fakeBackend';
 
+async function getUniqueSuggestionsFakeBackend(suggestions) {
+  suggestions = await getSuggestions(suggestions);
+  return [...new Set(suggestions)];
+}
+
 export function splitLastWord(input) {
   const splitInput = input.split(' ');
   const last = splitInput.pop();
@@ -14,6 +19,6 @@ export async function getLastWordAutoCompleteSuggestions(input, asyncGetSuggesti
   return result;
 }
 
-export async function getLastWordAutoCompleteSuggestionsFakeBackend(input) {
-  return getLastWordAutoCompleteSuggestions(input, getSuggestions);
+export async function getLastWordAutoCompleteSuggestionsFakeBackend(input, unique=true) {
+  return getLastWordAutoCompleteSuggestions(input, unique ? getSuggestions : getUniqueSuggestionsFakeBackend );
 }
