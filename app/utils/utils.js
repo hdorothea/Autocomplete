@@ -1,7 +1,7 @@
-import { getSuggestions } from '../fakeBackend';
+import { getSuggestions as getSuggestionsFakeBackend } from '../fakeBackend';
 
 async function getUniqueSuggestionsFakeBackend(suggestions) {
-  suggestions = await getSuggestions(suggestions);
+  suggestions = await getSuggestionsFakeBackend(suggestions);
   return [...new Set(suggestions)];
 }
 
@@ -25,7 +25,7 @@ export async function getLastWordAutoCompleteSuggestions(input, asyncGetSuggesti
 export async function getLastWordAutoCompleteSuggestionsFakeBackend(input, unique = true) {
   return getLastWordAutoCompleteSuggestions(
     input,
-    unique ? getSuggestions : getUniqueSuggestionsFakeBackend
+    unique ? getSuggestionsFakeBackend : getUniqueSuggestionsFakeBackend
   );
 }
 
