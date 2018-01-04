@@ -14,11 +14,26 @@ export function splitLastWord(input) {
 
 export async function getLastWordAutoCompleteSuggestions(input, asyncGetSuggestions) {
   const [rest, last] = splitLastWord(input);
+  if (!last) {
+    return [];
+  }
   const lastWordSuggestions = await asyncGetSuggestions(last);
   const result = lastWordSuggestions.map(lastWordSuggestion => `${rest} ${lastWordSuggestion}`);
   return result;
 }
 
-export async function getLastWordAutoCompleteSuggestionsFakeBackend(input, unique=true) {
-  return getLastWordAutoCompleteSuggestions(input, unique ? getSuggestions : getUniqueSuggestionsFakeBackend );
+export async function getLastWordAutoCompleteSuggestionsFakeBackend(input, unique = true) {
+  return getLastWordAutoCompleteSuggestions(
+    input,
+    unique ? getSuggestions : getUniqueSuggestionsFakeBackend
+  );
+}
+
+export function getNextIndexCircular(array, currentIndex, dec = false) {
+  if (currentIndex == null) {
+    return dec ? array.length - 1 : 0;
+  }
+
+  const newIndex = dec ? currentIndex - 1 : currentIndex + 1;
+  return (newIndex < 0 || newIndex >= array.length) ? null : newIndex;
 }

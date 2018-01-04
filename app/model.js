@@ -1,35 +1,47 @@
-import { getLastWordAutoCompleteSuggestionsFakeBackend } from './utils/utils';
+import { getLastWordAutoCompleteSuggestionsFakeBackend, getNextIndexCircular } from './utils/utils';
 
 export default class Model {
   setQuery(query) {
     this.query = query;
   }
 
-  async setSuggestions() {
+  setSuggestions(suggestions) {
+    this.suggestions = suggestions;
+  }
+
+  async updateSuggestions() {
     this.suggestions = await getLastWordAutoCompleteSuggestionsFakeBackend(this.query);
   }
 
   async updateQuery(newQuery, callback) {
     this.setQuery(newQuery);
-    await this.setSuggestions();
+    await this.updateSuggestions();
+    this.setActiveSuggestionI(null);
     callback(this.suggestions);
   }
 
   setActiveSuggestionI(activeSuggestionI) {
-    if (activeSuggestionI < this.suggestions.length) {
-      this.activeSuggestionI = activeSuggestionI;
-    }
+    this.activeSuggestionI = activeSuggestionI;
+  }
+
+  incrementActiveSuggestion(dec = false, callback) {
+    const newActiveSuggestionI = getNextIndexCircular(
+      this.suggestions,
+      this.activeSuggestionI,
+      dec
+    );
+    this.updateActiveSuggestion(newActiveSuggestionI, callback);
   }
 
   updateActiveSuggestion(activeSuggestion, callback) {
-    let activeSuggestionI;
     if (typeof activeSuggestion === 'number') {
-      activeSuggestionI = activeSuggestion;
+      this.setActiveSuggestionI(activeSuggestion);
+    } else if (activeSuggestion == null || this.suggestions.indexOf(activeSuggestion) === -1) {
+      this.setActiveSuggestionI(null);
     } else {
-      activeSuggestionI = this.suggestions.indexOf(activeSuggestion);
+      this.setActiveSuggestionI(this.suggestions.indexOf(activeSuggestion));
     }
 
-    this.setActiveSuggestionI(activeSuggestionI);
     callback(this.suggestions[this.activeSuggestionI]);
   }
 }

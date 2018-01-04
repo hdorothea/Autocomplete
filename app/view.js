@@ -17,6 +17,26 @@ export class QueryInputView {
   bindInputChange(handler) {
     $on(this.el, 'input', event => handler(event.target.value));
   }
+
+  onKeyDown(event, arrowUpCallback, arrowDownCallback) {
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      arrowUpCallback();
+      return;
+    }
+
+    if (event.keyCode === 40) {
+      event.preventDefault();
+      arrowDownCallback();
+      return;
+    }
+  }
+
+  bindKeyDown(arrowUpCallback, arrowDownCallback) {
+    $on(this.el, 'keydown', (event) => {
+      this.onKeyDown(event, arrowUpCallback, arrowDownCallback);
+    });
+  }
 }
 
 export class SuggestionView {
@@ -26,7 +46,13 @@ export class SuggestionView {
 
   update(suggestions) {
     this.el.innerHTML = '';
-    this.el.innerHTML = getSuggestionsTemplate(suggestions);
+    const newSuggestionsHTML = getSuggestionsTemplate(suggestions);
+    this.el.innerHTML = newSuggestionsHTML;
+    if (newSuggestionsHTML) {
+      this.el.classList.add('show');
+    } else {
+      this.el.classList.remove('show');
+    }
   }
 
   updateActive(activeSuggestion) {

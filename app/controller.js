@@ -7,15 +7,28 @@ export default class Controller {
 
   run() {
     this.queryInputView.bindInputChange(this.updateQuery.bind(this));
+    this.queryInputView.bindKeyDown(
+      () => this.incrementActiveSuggestion(true),
+      () => this.incrementActiveSuggestion(false)
+    );
     this.suggestionView.bindMouseOver(this.updateActiveSuggestion.bind(this));
   }
 
   updateQuery(newQuery) {
-    this.model.updateQuery(newQuery, suggestions => this.suggestionView.update(suggestions));
+    this.model.updateQuery(newQuery, this.suggestionView.update.bind(this.suggestionView));
+  }
+
+  incrementActiveSuggestion(dec = false) {
+    this.model.incrementActiveSuggestion(
+      dec,
+      this.suggestionView.updateActive.bind(this.suggestionView)
+    );
   }
 
   updateActiveSuggestion(activeSuggestion) {
-    this.model.updateActiveSuggestion(activeSuggestion, activeSuggestion =>
-      this.suggestionView.updateActive(activeSuggestion));
+    this.model.updateActiveSuggestion(
+      activeSuggestion,
+      this.suggestionView.updateActive.bind(this.suggestionView)
+    );
   }
 }
