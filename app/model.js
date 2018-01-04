@@ -10,7 +10,8 @@ export default class Model {
   }
 
   async updateSuggestions() {
-    this.suggestions = await getLastWordAutoCompleteSuggestionsFakeBackend(this.query);
+    const suggestions = await getLastWordAutoCompleteSuggestionsFakeBackend(this.query, true);
+    this.setSuggestions(suggestions);
   }
 
   async updateQuery(newQuery, callback) {
@@ -33,8 +34,15 @@ export default class Model {
 
   resetSuggestions(callback) {
     this.setSuggestions([]);
-    this.activeSuggestionI = null;
+    this.setActiveSuggestionI(null);
     callback(this.suggestions);
+  }
+
+  deactivateSuggestion(suggestion, callback) {
+    if (this.suggestions[this.activeSuggestionI] === suggestion) {
+      this.activeSuggestionI = null;
+      callback(suggestion);
+    }
   }
 
   incrementActiveSuggestion(dec = false, callback) {
@@ -43,18 +51,21 @@ export default class Model {
       this.activeSuggestionI,
       dec
     );
-    this.updateActiveSuggestion(newActiveSuggestionI, callback);
+
+    this.activateSuggestion(newActiveSuggestionI, callback);
   }
 
-  updateActiveSuggestion(activeSuggestion, callback) {
-    if (typeof activeSuggestion === 'number') {
-      this.setActiveSuggestionI(activeSuggestion);
-    } else if (activeSuggestion == null || this.suggestions.indexOf(activeSuggestion) === -1) {
+  activateSuggestion(suggestion, callback) {
+    const previouslyActiveSuggestion = this.suggestions[this.activeSuggestionI];
+
+    if (typeof suggestion === 'number') {
+      this.setActiveSuggestionI(suggestion);
+    } else if (suggestion == null || this.suggestions.indexOf(suggestion) === -1) {
       this.setActiveSuggestionI(null);
     } else {
-      this.setActiveSuggestionI(this.suggestions.indexOf(activeSuggestion));
+      this.setActiveSuggestionI(this.suggestions.indexOf(suggestion));
     }
 
-    callback(this.suggestions[this.activeSuggestionI]);
+    callback(previouslyActiveSuggestion, this.suggestions[this.activeSuggestionI]);
   }
 }

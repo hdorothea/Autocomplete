@@ -59,20 +59,34 @@ export class SuggestionView {
     }
   }
 
-  updateActive(activeSuggestion) {
+  updateSuggestion(suggestion, updateFunc) {
     this.el.querySelectorAll('.suggestion').forEach((suggestionLi) => {
-      if (suggestionLi.textContent === activeSuggestion) {
-        suggestionLi.classList.add('active');
-      } else {
-        suggestionLi.classList.remove('active');
+      if (suggestion !== null && suggestionLi.textContent === suggestion) {
+        updateFunc(suggestionLi);
       }
     });
   }
 
+  switchActive(previouslyActiveSuggestion, newlyActiveSuggestion) {
+    if (previouslyActiveSuggestion) {
+      this.unmarkActive(previouslyActiveSuggestion);
+    }
+    if (newlyActiveSuggestion) {
+      this.markActive(newlyActiveSuggestion);
+    }
+  }
+
+  unmarkActive(previouslyActiveSuggestion) {
+    this.updateSuggestion(previouslyActiveSuggestion, suggestionE => suggestionE.classList.remove('active'));
+  }
+
+  markActive(newlyActiveSuggestion) {
+    this.updateSuggestion(newlyActiveSuggestion, suggestionE => suggestionE.classList.add('active'));
+  }
+
   onMouseOverOut(event, handler) {
-    const suggestionElement = event.target.closest('.suggestion');
-    if (suggestionElement) {
-      handler(suggestionElement.textContent);
+    if (event.target.classList.contains('suggestion')) {
+      handler(event.target.textContent);
     }
   }
 

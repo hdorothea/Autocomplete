@@ -39,19 +39,34 @@ describe('SuggestionView', () => {
 
   beforeEach(() => {
     document.body.innerHTML = `<ul class='suggestions'> 
-  <li class='suggestion'> <div> <div class='num'> Number </div> Hallo </div> </li> 
-  <li class='suggestion'>Lola</li> 
 </ul`;
     testSuggestionView = new SuggestionView();
   });
 
   test('should select the correct element', () => {
+    document.body.innerHTML = "<ul class='suggestions'> </ul";
+    testSuggestionView = new SuggestionView();
     expect(testSuggestionView.el.classList).toContain('suggestions');
     expect(testSuggestionView.el.tagName).toBe('UL');
   });
 
   test('should add the active class to the correct suggestion element', () => {
-    testSuggestionView.updateActive('Lola');
+    document.body.innerHTML = `<ul class='suggestions'> 
+    <li class='suggestion'> <div> <div class='num'> Number </div> Hallo </div> </li> 
+    <li class='suggestion'>Lola</li> 
+  </ul`;
+    testSuggestionView = new SuggestionView();
+    testSuggestionView.markActive('Lola');
     expect(testSuggestionView.el.querySelector('.active').textContent).toBe('Lola');
+  });
+
+  test('should remove the active class from the correct suggestion element', () => {
+    document.body.innerHTML = `<ul class='suggestions'> 
+    <li class='suggestion'> <div> <div class='num'> Number </div> Hallo </div> </li> 
+    <li class='suggestion active'>Lola</li> 
+  </ul`;
+    testSuggestionView = new SuggestionView();
+    testSuggestionView.unmarkActive('Lola');
+    expect(testSuggestionView.el.querySelector('.active')).toBeNull();
   });
 });

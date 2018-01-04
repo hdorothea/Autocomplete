@@ -12,7 +12,7 @@ export default class Controller {
       () => this.incrementActiveSuggestion(true),
       () => this.incrementActiveSuggestion(false)
     );
-    this.suggestionView.bindMouse('mouseover', this.updateActiveSuggestion.bind(this));
+    this.suggestionView.bindMouse('mouseover', this.activateSuggestion.bind(this));
     this.suggestionView.bindMouse('mouseout', this.deactivateSuggestion.bind(this));
   }
 
@@ -27,21 +27,21 @@ export default class Controller {
   incrementActiveSuggestion(dec = false) {
     this.model.incrementActiveSuggestion(
       dec,
-      this.suggestionView.updateActive.bind(this.suggestionView)
+      this.suggestionView.switchActive.bind(this.suggestionView)
     );
   }
 
   deactivateSuggestion(suggestion) {
     this.model.deactivateSuggestion(
       suggestion,
-      this.suggestionView.updateActive.bind(this.suggestionView)
+      this.suggestionView.unmarkActive.bind(this.suggestionView)
     );
   }
 
-  updateActiveSuggestion(activeSuggestion) {
-    this.model.updateActiveSuggestion(
+  activateSuggestion(activeSuggestion) {
+    this.model.activateSuggestion(
       activeSuggestion,
-      this.suggestionView.updateActive.bind(this.suggestionView)
+      this.suggestionView.switchActive.bind(this.suggestionView)
     );
   }
 }
