@@ -14,10 +14,7 @@ export function splitLastWord(input) {
 
 export async function getLastWordAutoCompleteSuggestions(input, asyncGetSuggestions) {
   const [rest, last] = splitLastWord(input);
-  if (!last) {
-    return [];
-  }
-  const lastWordSuggestions = await asyncGetSuggestions(last);
+  const lastWordSuggestions = last ? await asyncGetSuggestions(last) : [''];
   const result = lastWordSuggestions.map(lastWordSuggestion => `${rest} ${lastWordSuggestion}`);
   return result;
 }
