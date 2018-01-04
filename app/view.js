@@ -14,6 +14,10 @@ export class QueryInputView {
     this.el.value = string;
   }
 
+  bindBlur(handler) {
+    $on(this.el, 'blur', handler);
+  }
+
   bindInputChange(handler) {
     $on(this.el, 'input', event => handler(event.target.value));
   }

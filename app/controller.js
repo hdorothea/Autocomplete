@@ -7,11 +7,16 @@ export default class Controller {
 
   run() {
     this.queryInputView.bindInputChange(this.updateQuery.bind(this));
+    this.queryInputView.bindBlur(this.resetSuggestions.bind(this));
     this.queryInputView.bindKeyDown(
       () => this.incrementActiveSuggestion(true),
       () => this.incrementActiveSuggestion(false)
     );
     this.suggestionView.bindMouseOver(this.updateActiveSuggestion.bind(this));
+  }
+
+  resetSuggestions() {
+    this.model.resetSuggestions(this.suggestionView.update.bind(this.suggestionView));
   }
 
   updateQuery(newQuery) {

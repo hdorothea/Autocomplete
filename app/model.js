@@ -24,6 +24,12 @@ export default class Model {
     this.activeSuggestionI = activeSuggestionI;
   }
 
+  resetSuggestions(callback) {
+    this.setSuggestions([]);
+    this.activeSuggestionI = null;
+    callback(this.suggestions);
+  }
+
   incrementActiveSuggestion(dec = false, callback) {
     const newActiveSuggestionI = getNextIndexCircular(
       this.suggestions,
