@@ -24,6 +24,13 @@ export default class Model {
     this.activeSuggestionI = activeSuggestionI;
   }
 
+  deactivateSuggestion(suggestion, callback) {
+    if (this.suggestions[this.activeSuggestionI] === suggestion) {
+      this.activeSuggestionI = null;
+      callback(this.suggestions[this.activeSuggestionI]);
+    }
+  }
+
   resetSuggestions(callback) {
     this.setSuggestions([]);
     this.activeSuggestionI = null;

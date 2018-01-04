@@ -69,16 +69,16 @@ export class SuggestionView {
     });
   }
 
-  onMouseOver(event, handler) {
+  onMouseOverOut(event, handler) {
     const suggestionElement = event.target.closest('.suggestion');
     if (suggestionElement) {
       handler(suggestionElement.textContent);
     }
   }
 
-  bindMouseOver(handler) {
-    $on(this.el, 'mouseover', (event) => {
-      this.onMouseOver(event, handler);
+  bindMouse(event, handler) {
+    $on(this.el, event, (event) => {
+      this.onMouseOverOut(event, handler);
     });
   }
 }
