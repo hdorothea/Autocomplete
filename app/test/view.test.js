@@ -8,6 +8,15 @@ describe('QueryInputView', () => {
     testQueryInputView = new QueryInputView();
   });
 
+  test('should call the callback with the correct keyCode', () => {
+    const testCallback = jest.fn();
+    testQueryInputView.onKeyDown({ keyCode: 38, preventDefault: () => null }, [
+      { keyCode: 38, callback: testCallback },
+      { keyCode: 40 }
+    ]);
+    expect(testCallback).toBeCalled();
+  });
+
   test('should select the correct element', () => {
     const result = testQueryInputView.el;
     expect(result.tagName).toBe('INPUT');

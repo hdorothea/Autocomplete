@@ -8,10 +8,11 @@ export default class Controller {
   run() {
     this.queryInputView.bindInputChange(this.updateQuery.bind(this));
     this.queryInputView.bindBlur(this.resetSuggestions.bind(this));
-    this.queryInputView.bindKeyDown(
-      () => this.incrementActiveSuggestion(true),
-      () => this.incrementActiveSuggestion(false)
-    );
+    this.queryInputView.bindKeyDown([
+      { keyCode: 38, callback: () => this.incrementActiveSuggestion(true) },
+      { keyCode: 40, callback: () => this.incrementActiveSuggestion(false) },
+      { keyCode: 13, callback: this.submitOrAcceptActiveSuggestion.bind(this) }
+    ]);
     this.suggestionView.bindMouse('mouseover', this.activateSuggestion.bind(this));
     this.suggestionView.bindMouse('mouseout', this.deactivateSuggestion.bind(this));
   }
@@ -43,5 +44,16 @@ export default class Controller {
       activeSuggestion,
       this.suggestionView.switchActive.bind(this.suggestionView)
     );
+  }
+
+  submitOrAcceptActiveSuggestion() {
+    if (this.model.activeSuggestionI !== null) {
+      this.model.acceptActiveSuggestion(' ', (newQuery, newSuggestions) => {
+        this.queryInputView.setValue(newQuery);
+        this.suggestionView.update(newSuggestions);
+      });
+    } else {
+      this.model.submit();
+    }
   }
 }

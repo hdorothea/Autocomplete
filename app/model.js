@@ -18,7 +18,9 @@ export default class Model {
     this.setQuery(newQuery);
     await this.updateSuggestions();
     this.setActiveSuggestionI(null);
-    callback(this.suggestions);
+    if (callback) {
+      callback(this.suggestions);
+    }
   }
 
   setActiveSuggestionI(activeSuggestionI) {
@@ -29,14 +31,22 @@ export default class Model {
     if (this.suggestions[this.activeSuggestionI] === suggestion) {
       const previouslyActiveSuggestion = this.suggestions[this.activeSuggestionI];
       this.activeSuggestionI = null;
-      callback(previouslyActiveSuggestion);
+      if (callback) {
+        callback(previouslyActiveSuggestion);
+      }
     }
+  }
+
+  submit() {
+    console.log(`You submitted ${this.query}`);
   }
 
   resetSuggestions(callback) {
     this.setSuggestions([]);
     this.setActiveSuggestionI(null);
-    callback(this.suggestions);
+    if (callback) {
+      callback(this.suggestions);
+    }
   }
 
   incrementActiveSuggestion(dec = false, callback) {
@@ -47,6 +57,14 @@ export default class Model {
     );
 
     this.activateSuggestion(newActiveSuggestionI, callback);
+  }
+
+  acceptActiveSuggestion(postFix = '', callback) {
+    this.setQuery(this.suggestions[this.activeSuggestionI] + postFix);
+    this.resetSuggestions();
+    if (callback) {
+      callback(this.query, this.suggestions);
+    }
   }
 
   activateSuggestion(suggestion, callback) {
@@ -60,6 +78,8 @@ export default class Model {
       this.setActiveSuggestionI(this.suggestions.indexOf(suggestion));
     }
 
-    callback(previouslyActiveSuggestion, this.suggestions[this.activeSuggestionI]);
+    if (callback) {
+      callback(previouslyActiveSuggestion, this.suggestions[this.activeSuggestionI]);
+    }
   }
 }
