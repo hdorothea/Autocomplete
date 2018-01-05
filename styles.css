@@ -1,22 +1,47 @@
-.query-input {
-  font-family: Roboto, Noto, sans-serif;
-  font-size: 1em;
-  padding: 0.5em;
+*{
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
 }
 
 .search-container {
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 8em;
+  margin-top: 8rem;
   display: flex;
-  flex-direction: column;
-  width: 80%;
+  flex-direction: row;
+  align-items: flex-start;
 }
 
 @media (min-width: 500px) {
   .search-container {
     width: 30em;
   }
+}
+.suggestion-container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+
+.query-input {
+  font-family: Roboto, Noto, sans-serif;
+  font-size: 1rem;
+  padding: 0.5rem;
+  height: 2rem;
+  border-radius: 2px 0 0 2px;
+}
+
+.query-input, .query-button {
+  border: 1px solid #ccc;
+  box-shadow: rgb(238, 238, 238) 0px 1px 2px 0px inset;
 }
 
 .suggestions {
@@ -27,9 +52,10 @@
   display: none;
   padding-top: 1em;
   padding-bottom: 1em;
-  font-size: 0.9em;
   border: 1px solid #ccc;
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px 0px;
+  box-shadow: rgba(177, 80, 80, 0.2) 0px 2px 4px 0px;
+  font-size: 0.9rem;
+  word-wrap: break-word;
 }
 
 .suggestions.show {
@@ -37,12 +63,41 @@
 }
 
 .suggestion {
-  padding-top: 0.2em;
-  padding-bottom: 0.2em;
+  padding-top: 0.4em;
+  padding-bottom: 0.4em;
   padding-left: 1em;
   padding-right: 1em;
+  max-width: 100%;
+  margin: 0;
 }
 
 .suggestion.active {
-  background-color: gainsboro;
+  background-color: rgb(238,238,238);
 }
+
+.query-button {
+  width: 10%;
+  outline: 0;
+  min-width: 3rem;
+  height: 2rem;
+  background-color: rgb(240, 240, 240);
+  border-radius: 0 2px 2px 0;
+}
+
+.query-button:hover {
+  background-color: rgb(238, 238, 238);
+}
+
+.query-icon {
+  display: block;
+  margin: auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: rgb(128,128,128);
+}
+
+.query-icon:hover {
+  fill: rgb(72,72,72);
+
+}
+
