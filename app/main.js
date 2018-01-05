@@ -1,6 +1,12 @@
 import Controller from './controller';
 import Model from './model';
-import { QueryInputView, SuggestionView } from './view';
+import { QueryInputView, SuggestionView, SuggestionContainerView } from './view';
 
-const controller = new Controller(new Model(), new QueryInputView(), new SuggestionView());
+const controller = new Controller(
+  new Model(),
+  new QueryInputView(),
+  new SuggestionView(),
+  new SuggestionContainerView()
+);
+
 controller.run();

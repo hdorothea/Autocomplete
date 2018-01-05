@@ -1,21 +1,32 @@
-import { $on, qs } from './utils/domUtils';
+import { $on, qs, $onOutside } from './utils/domUtils';
 import { getSuggestionsTemplate } from './templates';
+
+export class SuggestionContainerView {
+  constructor() {
+    this.elSelector = '.suggestion-container';
+    this.el = qs('.suggestion-container');
+  }
+
+  bindOutSideClick(scope, callback) {
+    $onOutside(scope, 'click', this.elSelector, callback);
+  }
+}
 
 export class QueryInputView {
   constructor() {
-    this.el = qs('.query-input');
+    this.elSelector = '.query-input';
+    this.el = qs(this.elSelector);
   }
 
   getValue() {
     return this.el.value;
   }
 
-  setValue(string) {
+  setValue(string, focus = true) {
     this.el.value = string;
-  }
-
-  bindBlur(handler) {
-    $on(this.el, 'blur', handler);
+    if (focus) {
+      this.el.focus();
+    }
   }
 
   bindInputChange(handler) {
@@ -41,7 +52,8 @@ export class QueryInputView {
 
 export class SuggestionView {
   constructor() {
-    this.el = qs('.suggestions');
+    this.elSelector = '.suggestions';
+    this.el = qs(this.elSelector);
   }
 
   update(suggestions) {
@@ -84,6 +96,18 @@ export class SuggestionView {
     if (event.target.classList.contains('suggestion')) {
       handler(event.target.textContent);
     }
+  }
+
+  onClick(event, handler) {
+    if (event.target.classList.contains('suggestion')) {
+      handler();
+    }
+  }
+
+  bindClick(handler) {
+    $on(this.el, 'click', (event) => {
+      this.onClick(event, handler);
+    });
   }
 
   bindMouse(event, handler) {
