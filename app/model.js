@@ -27,8 +27,9 @@ export default class Model {
 
   deactivateSuggestion(suggestion, callback) {
     if (this.suggestions[this.activeSuggestionI] === suggestion) {
+      const previouslyActiveSuggestion = this.suggestions[this.activeSuggestionI];
       this.activeSuggestionI = null;
-      callback(this.suggestions[this.activeSuggestionI]);
+      callback(previouslyActiveSuggestion);
     }
   }
 
@@ -36,13 +37,6 @@ export default class Model {
     this.setSuggestions([]);
     this.setActiveSuggestionI(null);
     callback(this.suggestions);
-  }
-
-  deactivateSuggestion(suggestion, callback) {
-    if (this.suggestions[this.activeSuggestionI] === suggestion) {
-      this.activeSuggestionI = null;
-      callback(suggestion);
-    }
   }
 
   incrementActiveSuggestion(dec = false, callback) {
