@@ -27,8 +27,7 @@ export function getSuggestions(text) {
     const randomTimeout = Math.random() * MAX_SERVER_LATENCY;
     setTimeout(() => {
       if (getRandomBool(FAILURE_COEFF)) {
-        resolve(results);
-        // reject();
+        reject(new Error('Fake backend error'));
       } else {
         resolve(results);
       }
