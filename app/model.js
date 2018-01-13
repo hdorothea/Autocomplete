@@ -1,8 +1,13 @@
-import { getLastWordAutoCompleteSuggestionsFakeBackend, getNextIndexCircular } from './utils/utils';
+import throttle from 'lodash.throttle';
+import { getGetSuggestions, getNextIndexCircular, getLastWordSuggestions } from './utils/utils';
 
 export default class Model {
-  setQuery(query) {
-    this.query = query;
+  constructor() {
+    this.getAndUpdateSuggestions = throttle(this.getAndUpdateSuggestions.bind(this), 420);
+    this.suggestions = [];
+    this.query = '';
+    this.suggestionDiffs = [];
+    this.activeSuggestionI = 0;
   }
   /**
    * Fetch the suggestions for the last word from the backend. Update suggestions
@@ -10,12 +15,28 @@ export default class Model {
    * @param  {Function} callback Called with the new suggestions and difference slices
    * when the suggestions and difference slices have been updated
    */
-    this.suggestions = suggestions;
+  async getAndUpdateSuggestions(callback) {
+    const [suggestions, suggestionDiffs] = await getLastWordSuggestions(
+      this.query,
+      getGetSuggestions(true, 1),
+      true
+    );
+    this.updateSuggestions(suggestions, suggestionDiffs, callback);
   }
-
-  async updateSuggestions() {
-    const suggestions = await getLastWordAutoCompleteSuggestionsFakeBackend(this.query, true);
-    this.setSuggestions(suggestions);
+  /**
+   * Update suggestions and related properties to reflect the change in suggestions
+   * @param  {string[]} suggestions
+   * @param  {number[][]} suggestionDiffs An array of difference slices
+   * @param  {Function} callback Called with the new suggestions and difference slices
+   * when the suggestions and difference slices have been updated
+   */
+  updateSuggestions(suggestions, suggestionDiffs, callback) {
+    this.suggestions = suggestions;
+    this.suggestionDiffs = suggestionDiffs;
+    this.resetActiveSuggestionI();
+    if (callback) {
+      callback(this.suggestions, this.suggestionDiffs, null);
+    }
   }
   /**
    * Update query and suggestions to reflect the new query
@@ -24,16 +45,12 @@ export default class Model {
    * when the query and suggestions have been completed
    */
   async updateQuery(newQuery, callback) {
-    this.setQuery(newQuery);
-    await this.updateSuggestions();
-    this.setActiveSuggestionI(null);
-    if (callback) {
-      callback(this.suggestions);
-    }
+    this.query = newQuery;
+    this.getAndUpdateSuggestions(callback);
   }
 
-  setActiveSuggestionI(activeSuggestionI) {
-    this.activeSuggestionI = activeSuggestionI;
+  resetActiveSuggestionI() {
+    this.activeSuggestionI = null;
   }
   /**
    * Reset the currently activeSuggestion if it is the same as suggestion
@@ -44,7 +61,7 @@ export default class Model {
   deactivateSuggestion(suggestion, callback) {
     if (this.suggestions[this.activeSuggestionI] === suggestion) {
       const previouslyActiveSuggestion = this.suggestions[this.activeSuggestionI];
-      this.activeSuggestionI = null;
+      this.resetActiveSuggestionI();
       if (callback) {
         callback(previouslyActiveSuggestion);
       }
@@ -55,8 +72,8 @@ export default class Model {
    * @param  {Function} callback Called with the new suggestions when the suggestions are reset
    */
   resetSuggestions(callback) {
-    this.setSuggestions([]);
-    this.setActiveSuggestionI(null);
+    this.suggestions = [];
+    this.resetActiveSuggestionI(null);
     if (callback) {
       callback(this.suggestions);
     }
@@ -84,7 +101,7 @@ export default class Model {
    * once the query and the suggestions are updated
    */
   acceptActiveSuggestion(postFix = '', callback) {
-    this.setQuery(this.suggestions[this.activeSuggestionI] + postFix);
+    this.query = this.suggestions[this.activeSuggestionI] + postFix;
     this.resetSuggestions();
     if (callback) {
       callback(this.query, this.suggestions);
@@ -102,11 +119,11 @@ export default class Model {
     const previouslyActiveSuggestion = this.suggestions[this.activeSuggestionI];
 
     if (typeof suggestion === 'number') {
-      this.setActiveSuggestionI(suggestion);
+      this.activeSuggestionI = suggestion;
     } else if (suggestion == null || this.suggestions.indexOf(suggestion) === -1) {
-      this.setActiveSuggestionI(null);
+      this.activeSuggestionI = null;
     } else {
-      this.setActiveSuggestionI(this.suggestions.indexOf(suggestion));
+      this.activeSuggestionI = this.suggestions.indexOf(suggestion);
     }
 
     if (callback) {
