@@ -55,10 +55,9 @@ export class SuggestionView {
     this.elSelector = '.suggestions';
     this.el = qs(this.elSelector);
   }
-
-  update(suggestions) {
+  update(suggestions, diffs) {
     this.el.innerHTML = '';
-    const newSuggestionsHTML = getSuggestionsTemplate(suggestions);
+    const newSuggestionsHTML = getSuggestionsTemplate(suggestions, diffs);
     this.el.innerHTML = newSuggestionsHTML;
     if (newSuggestionsHTML) {
       this.el.classList.add('show');
