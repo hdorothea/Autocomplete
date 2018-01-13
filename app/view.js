@@ -127,7 +127,7 @@ export class SuggestionView {
    * @param  {MouseEvent} event
    * @param  {Function} handler
    */
-  onMouse(event, handler) {
+  onMouseOverOut(event, handler) {
     if (
       ((!event.relatedTarget || !event.relatedTarget.closest('.suggestion')) &&
         event.target.closest('.suggestion')) ||
@@ -151,15 +151,9 @@ export class SuggestionView {
     });
   }
 
-  bindMouseOver(handler) {
-    $on(this.el, 'mouseover', (event) => {
-      this.onMouseOver(event, handler);
-    });
-  }
-
   bindMouse(type, handler) {
     $on(this.el, type, (event) => {
-      this.onMouse(event, handler);
+      this.onMouseOverOut(event, handler);
     });
   }
 }
