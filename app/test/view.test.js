@@ -1,4 +1,4 @@
-import { QueryInputView, SuggestionView } from '../view';
+import { QueryInputView, SuggestionView, SuggestionContainerView } from '../view';
 
 describe('QueryInputView', () => {
   let testQueryInputView;
@@ -47,8 +47,6 @@ describe('SuggestionView', () => {
   let testSuggestionView;
 
   beforeEach(() => {
-    document.body.innerHTML = `<ul class='suggestions'> 
-</ul`;
     testSuggestionView = new SuggestionView();
   });
 
@@ -77,5 +75,19 @@ describe('SuggestionView', () => {
     testSuggestionView = new SuggestionView();
     testSuggestionView.unmarkActive('Lola');
     expect(testSuggestionView.el.querySelector('.active')).toBeNull();
+  });
+});
+
+describe('Suggestion container view', () => {
+  let suggestionContainerView;
+
+  beforeEach(() => {
+    document.body.innerHTML = '<div class="search-container"><div class="suggestion-container"><ul class=\'suggestions\'></ul><div width="200px" height="200px" class="test"></div></div>';
+    suggestionContainerView = new SuggestionContainerView();
+  });
+
+  test('should select the correct element', () => {
+    expect(suggestionContainerView.el.classList).toContain('suggestion-container');
+    expect(suggestionContainerView.el.tagName).toBe('DIV');
   });
 });
