@@ -21,7 +21,11 @@ export class QueryInputView {
   getValue() {
     return this.el.value;
   }
-
+  /**
+   * Set the input value
+   * @param  {string} string The new input value
+   * @param  {boolean} [focus=true] Should the input element be focused after updating the value
+   */
   setValue(string, focus = true) {
     this.el.value = string;
     if (focus) {
@@ -55,6 +59,11 @@ export class SuggestionView {
     this.elSelector = '.suggestions';
     this.el = qs(this.elSelector);
   }
+  /**
+   * Display the new suggestions
+   * @param  {string[]} suggestions
+   * @param  {number[][]} diffs
+   */
   update(suggestions, diffs) {
     this.el.innerHTML = '';
     const newSuggestionsHTML = getSuggestionsTemplate(suggestions, diffs);
@@ -65,7 +74,11 @@ export class SuggestionView {
       this.el.classList.remove('show');
     }
   }
-
+  /**
+   * Generic method to update a suggestion element
+   * @param  {string} suggestion
+   * @param  {Function} updateFunc function to call the suggestion with
+   */
   updateSuggestion(suggestion, updateFunc) {
     this.el.querySelectorAll('.suggestion').forEach((suggestionLi) => {
       if (suggestion !== null && suggestionLi.textContent === suggestion) {
@@ -74,6 +87,11 @@ export class SuggestionView {
     });
   }
 
+  /**
+   * Inactivate the previous sugestion and activate the new suggestion
+   * @param  {string} previouslyActiveSuggestion
+   * @param  {string} newlyActiveSuggestion
+   */
   switchActive(previouslyActiveSuggestion, newlyActiveSuggestion) {
     if (previouslyActiveSuggestion) {
       this.unmarkActive(previouslyActiveSuggestion);
@@ -82,13 +100,21 @@ export class SuggestionView {
       this.markActive(newlyActiveSuggestion);
     }
   }
-
+  /**
+   * Remove active class from suggestion
+   * @param  {string} previouslyActiveSuggestion
+   */
   unmarkActive(previouslyActiveSuggestion) {
-    this.updateSuggestion(previouslyActiveSuggestion, suggestionE => suggestionE.classList.remove('active'));
+    this.updateSuggestion(previouslyActiveSuggestion, suggestionE =>
+      suggestionE.classList.remove('active'));
   }
-
+  /**
+   * Add active class to suggestions
+   * @param  {string} newlyActiveSuggestion
+   */
   markActive(newlyActiveSuggestion) {
-    this.updateSuggestion(newlyActiveSuggestion, suggestionE => suggestionE.classList.add('active'));
+    this.updateSuggestion(newlyActiveSuggestion, suggestionE =>
+      suggestionE.classList.add('active'));
   }
 
   /**
@@ -101,7 +127,7 @@ export class SuggestionView {
    * @param  {MouseEvent} event
    * @param  {Function} handler
    */
-  onMouseOverOut(event, handler) {
+  onMouse(event, handler) {
     if (
       ((!event.relatedTarget || !event.relatedTarget.closest('.suggestion')) &&
         event.target.closest('.suggestion')) ||
@@ -125,9 +151,15 @@ export class SuggestionView {
     });
   }
 
+  bindMouseOver(handler) {
+    $on(this.el, 'mouseover', (event) => {
+      this.onMouseOver(event, handler);
+    });
+  }
+
   bindMouse(type, handler) {
     $on(this.el, type, (event) => {
-      this.onMouseOverOut(event, handler);
+      this.onMouse(event, handler);
     });
   }
 }
