@@ -91,14 +91,30 @@ export class SuggestionView {
     this.updateSuggestion(newlyActiveSuggestion, suggestionE => suggestionE.classList.add('active'));
   }
 
+  /**
+ * @typedef {object} MouseEvent
+ */
+
+  /**
+   * Call the handler if we move the mouse from one suggestion to another or
+   * out/into the suggestions
+   * @param  {MouseEvent} event
+   * @param  {Function} handler
+   */
   onMouseOverOut(event, handler) {
-    if (event.target.classList.contains('suggestion')) {
-      handler(event.target.textContent);
+    if (
+      ((!event.relatedTarget || !event.relatedTarget.closest('.suggestion')) &&
+        event.target.closest('.suggestion')) ||
+      (event.target.closest('.suggestion') &&
+        event.relatedTarget.closest('.suggestion') &&
+        event.relatedTarget.closest('.suggestion') !== event.target.closest('.suggestion'))
+    ) {
+      handler(event.target.closest('.suggestion').textContent);
     }
   }
 
   onClick(event, handler) {
-    if (event.target.classList.contains('suggestion')) {
+    if (event.target.closest('.suggestion')) {
       handler();
     }
   }
@@ -109,8 +125,8 @@ export class SuggestionView {
     });
   }
 
-  bindMouse(event, handler) {
-    $on(this.el, event, (event) => {
+  bindMouse(type, handler) {
+    $on(this.el, type, (event) => {
       this.onMouseOverOut(event, handler);
     });
   }
